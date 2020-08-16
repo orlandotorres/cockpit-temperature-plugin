@@ -18,9 +18,9 @@ window.onload = function () {
   chart.streamTo(canvas, 500);
 
   function run_proc(series, average_array) {
-    var proc = cockpit.spawn(['vcgencmd', 'measure_temp']);
+    var proc = cockpit.spawn(['cat', '/sys/class/thermal/thermal_zone0/temp']);
     proc.done(function (data) {
-      pt = parseFloat(data.match(/([0-9\.]+)/)[1]);
+      pt = parseFloat(data.match(/([0-9\.]+)/)[1]) / 1000;
       series.append(new Date().getTime(), pt);
       document.getElementById('cur_temp').innerHTML = pt;
       average_array.push(pt);
@@ -32,7 +32,6 @@ window.onload = function () {
     });
   }
 
-  //run_proc(series)
   setInterval(function () {
     run_proc(series, average_array);
   }, 1000);
